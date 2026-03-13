@@ -287,31 +287,61 @@ namespace LINQ_Project
             #endregion
 
             #region Set Operators
-            /// 1.Find the unique Category names from Product List
-            var Result1 = ProductList.GroupBy(P => P.Category)
-                                     .Select(C => new { Category = C.Key }).Distinct();
+            ///// 1.Find the unique Category names from Product List
+            //var Result1 = ProductList.GroupBy(P => P.Category)
+            //                         .Select(C => new { Category = C.Key }).Distinct();
+            //foreach (var Result in Result1)
+            //    Console.WriteLine(Result);
+
+            ///// 2. Produce a Sequence containing the unique first letter from both product and customer names.
+            //var Result2 = ProductList.Select(P => P.ProductName[0]).Union(CustomerList.Select(C => C.CustomerName[0]));
+            //foreach (var Result in Result2)
+            //    Console.WriteLine(Result);
+
+            ///// 3. Create one sequence that contains the common first letter from both product and customer names.
+            //var Result3 = ProductList.Select(P => P.ProductName[0]).Intersect(CustomerList.Select(C => C.CustomerName[0]));
+            //foreach (var Result in Result3)
+            //    Console.WriteLine(Result);
+
+            ///// 4. Create one sequence that contains the first letters of product names that are not also first letters of customer names.
+            //var Result4 = ProductList.Select(P => P.ProductName[0]).Except(CustomerList.Select(C => C.CustomerName[0]));
+            //foreach (var Result in Result4)
+            //    Console.WriteLine(Result);
+
+            ///// 5. Create one sequence that contains the last Three Characters in each name of all customers and products, including any duplicates
+            //var Result5 = ProductList.Select(P => P.ProductName[^3..]).Concat(CustomerList.Select(C => C.CustomerName[^3..]));
+            //foreach (var Result in Result5)
+            //    Console.WriteLine(Result);
+            #endregion
+
+            #region Partitioning Operators
+            /// 1. Get the first 3 orders from customers in Washington
+            var Result1 = CustomerList.Where(C => C.Region == "WA").SelectMany(C => C.Orders).Take(3);
             foreach (var Result in Result1)
                 Console.WriteLine(Result);
 
-            /// 2. Produce a Sequence containing the unique first letter from both product and customer names.
-            var Result2 = ProductList.Select(P => P.ProductName[0]).Union(CustomerList.Select(C => C.CustomerName[0]));
+            /// 2. Get all but the first 2 orders from customers in Washington.
+            var Result2 = CustomerList.Where(C => C.Region == "WA").SelectMany(C => C.Orders).Skip(2);
             foreach (var Result in Result2)
                 Console.WriteLine(Result);
 
-            /// 3. Create one sequence that contains the common first letter from both product and customer names.
-            var Result3 = ProductList.Select(P => P.ProductName[0]).Intersect(CustomerList.Select(C => C.CustomerName[0]));
-            foreach (var Result in Result3)
-                Console.WriteLine(Result);
+            /// 3. Return elements starting from the beginning of the array until a number is hit that is less than its position in the array.
+            int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            var Result3 = numbers.TakeWhile((N, I) => N > I);
+            foreach (var result in Result3)
+                Console.WriteLine(result);
 
-            /// 4. Create one sequence that contains the first letters of product names that are not also first letters of customer names.
-            var Result4 = ProductList.Select(P => P.ProductName[0]).Except(CustomerList.Select(C => C.CustomerName[0]));
-            foreach (var Result in Result4)
-                Console.WriteLine(Result);
+            /// 4.Get the elements of the array starting from the first element divisible by 3.
+            int[] numbers1 = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            var Result4 = numbers1.SkipWhile(N => N % 3 != 0);
+            foreach (var result in Result4)
+                Console.WriteLine(result);
 
-            /// 5. Create one sequence that contains the last Three Characters in each name of all customers and products, including any duplicates
-            var Result5 = ProductList.Select(P => P.ProductName[^3..]).Concat(CustomerList.Select(C => C.CustomerName[^3..]));
-            foreach (var Result in Result5)
-                Console.WriteLine(Result);
+            /// 5. Get the elements of the array starting from the first element less than its position.
+            int[] numbers2 = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            var Result5 = numbers2.SkipWhile((N, I) => N > I);
+            foreach (var result in Result5)
+                Console.WriteLine(result);
             #endregion
         }
     }
