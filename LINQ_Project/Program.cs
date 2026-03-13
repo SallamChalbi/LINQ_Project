@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using LINQ_Project.Data;
+using System.Collections.Generic;
 using static LINQ_Project.ListGenerator;
 namespace LINQ_Project
 {
@@ -157,131 +158,159 @@ namespace LINQ_Project
             #endregion
 
             #region Aggregate Operators
-            /// 1. Uses Count to get the number of odd numbers in the array
-            int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-            var Result1 = Arr.Count(N => N % 2 == 1);
-            Console.WriteLine(Result1);
+            ///// 1. Uses Count to get the number of odd numbers in the array
+            //int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            //var Result1 = Arr.Count(N => N % 2 == 1);
+            //Console.WriteLine(Result1);
 
-            /// 2. Return a list of customers and how many orders each has.
-            var Result2 = CustomerList.Select(C => new
-            {
-                C.CustomerID,
-                C.CustomerName,
-                OrderCount = C.Orders.Count()
-            });
-            foreach (var result in Result2)
-                Console.WriteLine(result);
+            ///// 2. Return a list of customers and how many orders each has.
+            //var Result2 = CustomerList.Select(C => new
+            //{
+            //    C.CustomerID,
+            //    C.CustomerName,
+            //    OrderCount = C.Orders.Count()
+            //});
+            //foreach (var result in Result2)
+            //    Console.WriteLine(result);
 
-            /// 3. Return a list of categories and how many products each has
-            var Result3 = from P in ProductList
-                          group P by P.Category into CategoryGroup
-                          select new
-                          {
-                              Category = CategoryGroup.Key,
-                              ProductsCount = CategoryGroup.Count(),
-                          };
-            foreach (var result in Result3)
-                Console.WriteLine(result);
+            ///// 3. Return a list of categories and how many products each has
+            //var Result3 = from P in ProductList
+            //              group P by P.Category into CategoryGroup
+            //              select new
+            //              {
+            //                  Category = CategoryGroup.Key,
+            //                  ProductsCount = CategoryGroup.Count(),
+            //              };
+            //foreach (var result in Result3)
+            //    Console.WriteLine(result);
 
-            /// 4. Get the total of the numbers in an array.
-            int[] Arr1 = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-            var Result4 = Arr1.Sum();
-            Console.WriteLine(Result4);
+            ///// 4. Get the total of the numbers in an array.
+            //int[] Arr1 = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            //var Result4 = Arr1.Sum();
+            //Console.WriteLine(Result4);
 
-            string[] Arr2 = File.ReadAllLines("dictionary_english.txt");
-            /// 5.Get the total number of characters of all words in dictionary_english.txt(Read dictionary_english.txt into Array of String First).
-            var Result5 = Arr2.Sum(W => W.Length);
-            Console.WriteLine(Result5);
+            //string[] Arr2 = File.ReadAllLines("dictionary_english.txt");
+            ///// 5.Get the total number of characters of all words in dictionary_english.txt(Read dictionary_english.txt into Array of String First).
+            //var Result5 = Arr2.Sum(W => W.Length);
+            //Console.WriteLine(Result5);
 
-            /// 6. Get the length of the shortest word in dictionary_english.txt (Read dictionary_english.txt into Array of String First).
-            var Result6 = Arr2.Min(W => W.Length);
-            Console.WriteLine(Result6);
+            ///// 6. Get the length of the shortest word in dictionary_english.txt (Read dictionary_english.txt into Array of String First).
+            //var Result6 = Arr2.Min(W => W.Length);
+            //Console.WriteLine(Result6);
 
-            /// 7. Get the length of the longest word in dictionary_english.txt (Read dictionary_english.txt into Array of String First).
-            var Result7 = Arr2.Max(W => W.Length);
-            Console.WriteLine(Result7);
+            ///// 7. Get the length of the longest word in dictionary_english.txt (Read dictionary_english.txt into Array of String First).
+            //var Result7 = Arr2.Max(W => W.Length);
+            //Console.WriteLine(Result7);
 
-            /// 8. Get the average length of the words in dictionary_english.txt (Read dictionary_english.txt into Array of String First).
-            var Result8 = Arr2.Average(W => W.Length);
-            Console.WriteLine(Result8);
+            ///// 8. Get the average length of the words in dictionary_english.txt (Read dictionary_english.txt into Array of String First).
+            //var Result8 = Arr2.Average(W => W.Length);
+            //Console.WriteLine(Result8);
 
-            /// 9. Get the total units in stock for each product category.
-            var Result9 = ProductList.GroupBy(P => P.Category)
-                                     .Select(C => new
-                                     {
-                                         Category = C.Key,
-                                         TotalUnitInStock = C.Sum(P => P.UnitsInStock)
-                                     });
-            foreach (var Result in Result9)
+            ///// 9. Get the total units in stock for each product category.
+            //var Result9 = ProductList.GroupBy(P => P.Category)
+            //                         .Select(C => new
+            //                         {
+            //                             Category = C.Key,
+            //                             TotalUnitInStock = C.Sum(P => P.UnitsInStock)
+            //                         });
+            //foreach (var Result in Result9)
+            //    Console.WriteLine(Result);
+
+            ///// 10. Get the cheapest price among each category's products
+            //var Result10 = from P in ProductList
+            //               group P by P.Category into C
+            //               select new
+            //               {
+            //                   Category = C.Key,
+            //                   CheapestPrice = C.Min(P => P.UnitPrice)
+            //               };
+            //foreach (var Result in Result10)
+            //    Console.WriteLine(Result);
+
+            ///// 11. Get the products with the cheapest price in each category (Use Let)
+            //var Result11 = from P in ProductList
+            //               group P by P.Category into C
+            //               let Cheap = C.Min(p => p.UnitPrice)
+            //               from prod in C
+            //               where prod.UnitPrice == Cheap
+            //               select new
+            //               {
+            //                   Category = C.Key,
+            //                   Product = prod.ProductName,
+            //                   Price = Cheap
+            //               };
+            //foreach (var result in Result11)
+            //    Console.WriteLine(result);
+
+            ///// 12. Get the most expensive price among each category's products.
+            //var Result12 = from P in ProductList
+            //               group P by P.Category into C
+            //               select new
+            //               {
+            //                   Category = C.Key,
+            //                   ExpensivePrice = C.Max(P => P.UnitPrice)
+            //               };
+            //foreach (var Result in Result12)
+            //    Console.WriteLine(Result);
+
+            ///// 13. Get the products with the most expensive price in each category.
+            //var Result13 = from P in ProductList
+            //               group P by P.Category into C
+            //               let Expensive = C.Max(p => p.UnitPrice)
+            //               from prod in C
+            //               where prod.UnitPrice == Expensive
+            //               select new
+            //               {
+            //                   Category = C.Key,
+            //                   Product = prod.ProductName,
+            //                   Price = Expensive
+            //               };
+            ///*Result13 = ProductList.GroupBy(P => P.Category)
+            //                      .Select(C => new
+            //                      {
+            //                          Category = C.Key,
+            //                          Product = C.Where(P => P.UnitPrice == C.Max(p => p.UnitPrice)).Select(P => P.ProductName).FirstOrDefault(),
+            //                          Price = C.Max(P => P.UnitPrice)
+            //                      });*/
+            //foreach (var result in Result13)
+            //    Console.WriteLine(result);
+
+            ///// 14.Get the average price of each category's products.
+            //var Result14 = ProductList.GroupBy(P => P.Category)
+            //                          .Select(C => new
+            //                          {
+            //                              Category = C.Key,
+            //                              AveragePrice = C.Average(p => p.UnitPrice)
+            //                          });
+            //foreach(var Result in Result14)
+            //    Console.WriteLine(Result);
+            #endregion
+
+            #region Set Operators
+            /// 1.Find the unique Category names from Product List
+            var Result1 = ProductList.GroupBy(P => P.Category)
+                                     .Select(C => new { Category = C.Key }).Distinct();
+            foreach (var Result in Result1)
                 Console.WriteLine(Result);
 
-            /// 10. Get the cheapest price among each category's products
-            var Result10 = from P in ProductList
-                           group P by P.Category into C
-                           select new
-                           {
-                               Category = C.Key,
-                               CheapestPrice = C.Min(P => P.UnitPrice)
-                           };
-            foreach (var Result in Result10)
+            /// 2. Produce a Sequence containing the unique first letter from both product and customer names.
+            var Result2 = ProductList.Select(P => P.ProductName[0]).Union(CustomerList.Select(C => C.CustomerName[0]));
+            foreach (var Result in Result2)
                 Console.WriteLine(Result);
 
-            /// 11. Get the products with the cheapest price in each category (Use Let)
-            var Result11 = from P in ProductList
-                           group P by P.Category into C
-                           let Cheap = C.Min(p => p.UnitPrice)
-                           from prod in C
-                           where prod.UnitPrice == Cheap
-                           select new
-                           {
-                               Category = C.Key,
-                               Product = prod.ProductName,
-                               Price = Cheap
-                           };
-            foreach (var result in Result11)
-                Console.WriteLine(result);
-
-            /// 12. Get the most expensive price among each category's products.
-            var Result12 = from P in ProductList
-                           group P by P.Category into C
-                           select new
-                           {
-                               Category = C.Key,
-                               ExpensivePrice = C.Max(P => P.UnitPrice)
-                           };
-            foreach (var Result in Result12)
+            /// 3. Create one sequence that contains the common first letter from both product and customer names.
+            var Result3 = ProductList.Select(P => P.ProductName[0]).Intersect(CustomerList.Select(C => C.CustomerName[0]));
+            foreach (var Result in Result3)
                 Console.WriteLine(Result);
 
-            /// 13. Get the products with the most expensive price in each category.
-            var Result13 = from P in ProductList
-                           group P by P.Category into C
-                           let Expensive = C.Max(p => p.UnitPrice)
-                           from prod in C
-                           where prod.UnitPrice == Expensive
-                           select new
-                           {
-                               Category = C.Key,
-                               Product = prod.ProductName,
-                               Price = Expensive
-                           };
-            /*Result13 = ProductList.GroupBy(P => P.Category)
-                                  .Select(C => new
-                                  {
-                                      Category = C.Key,
-                                      Product = C.Where(P => P.UnitPrice == C.Max(p => p.UnitPrice)).Select(P => P.ProductName).FirstOrDefault(),
-                                      Price = C.Max(P => P.UnitPrice)
-                                  });*/
-            foreach (var result in Result13)
-                Console.WriteLine(result);
+            /// 4. Create one sequence that contains the first letters of product names that are not also first letters of customer names.
+            var Result4 = ProductList.Select(P => P.ProductName[0]).Except(CustomerList.Select(C => C.CustomerName[0]));
+            foreach (var Result in Result4)
+                Console.WriteLine(Result);
 
-            /// 14.Get the average price of each category's products.
-            var Result14 = ProductList.GroupBy(P => P.Category)
-                                      .Select(C => new
-                                      {
-                                          Category = C.Key,
-                                          AveragePrice = C.Average(p => p.UnitPrice)
-                                      });
-            foreach(var Result in Result14)
+            /// 5. Create one sequence that contains the last Three Characters in each name of all customers and products, including any duplicates
+            var Result5 = ProductList.Select(P => P.ProductName[^3..]).Concat(CustomerList.Select(C => C.CustomerName[^3..]));
+            foreach (var Result in Result5)
                 Console.WriteLine(Result);
             #endregion
         }
