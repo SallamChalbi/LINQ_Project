@@ -1,4 +1,5 @@
-﻿using static LINQ_Project.ListGenerator;
+﻿using System.Collections.Generic;
+using static LINQ_Project.ListGenerator;
 namespace LINQ_Project
 {
     class CustomComparer : IComparer<string>
@@ -141,18 +142,147 @@ namespace LINQ_Project
             #endregion
 
             #region Element Operators
-            /// 1. Get first Product out of Stock 
-            var Result1 = ProductList.FirstOrDefault(P => P.UnitsInStock == 0);
+            ///// 1. Get first Product out of Stock 
+            //var Result1 = ProductList.FirstOrDefault(P => P.UnitsInStock == 0);
+            //Console.WriteLine(Result1);
+
+            ///// 2. Return the first product whose Price > 1000, unless there is no match, in which case null is returned.
+            //var Result2 = ProductList.FirstOrDefault(P => P.UnitPrice > 1000);
+            //Console.WriteLine(Result2);
+
+            ///// 3.Retrieve the second number greater than 5 
+            //int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            //var Result3 = Arr.Where(N => N > 5).ElementAtOrDefault(1);
+            //Console.WriteLine(Result3);
+            #endregion
+
+            #region Aggregate Operators
+            /// 1. Uses Count to get the number of odd numbers in the array
+            int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            var Result1 = Arr.Count(N => N % 2 == 1);
             Console.WriteLine(Result1);
 
-            /// 2. Return the first product whose Price > 1000, unless there is no match, in which case null is returned.
-            var Result2 = ProductList.FirstOrDefault(P => P.UnitPrice > 1000);
-            Console.WriteLine(Result2);
+            /// 2. Return a list of customers and how many orders each has.
+            var Result2 = CustomerList.Select(C => new
+            {
+                C.CustomerID,
+                C.CustomerName,
+                OrderCount = C.Orders.Count()
+            });
+            foreach (var result in Result2)
+                Console.WriteLine(result);
 
-            /// 3.Retrieve the second number greater than 5 
-            int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-            var Result3 = Arr.Where(N => N > 5).ElementAtOrDefault(1);
-            Console.WriteLine(Result3);
+            /// 3. Return a list of categories and how many products each has
+            var Result3 = from P in ProductList
+                          group P by P.Category into CategoryGroup
+                          select new
+                          {
+                              Category = CategoryGroup.Key,
+                              ProductsCount = CategoryGroup.Count(),
+                          };
+            foreach (var result in Result3)
+                Console.WriteLine(result);
+
+            /// 4. Get the total of the numbers in an array.
+            int[] Arr1 = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            var Result4 = Arr1.Sum();
+            Console.WriteLine(Result4);
+
+            string[] Arr2 = File.ReadAllLines("dictionary_english.txt");
+            /// 5.Get the total number of characters of all words in dictionary_english.txt(Read dictionary_english.txt into Array of String First).
+            var Result5 = Arr2.Sum(W => W.Length);
+            Console.WriteLine(Result5);
+
+            /// 6. Get the length of the shortest word in dictionary_english.txt (Read dictionary_english.txt into Array of String First).
+            var Result6 = Arr2.Min(W => W.Length);
+            Console.WriteLine(Result6);
+
+            /// 7. Get the length of the longest word in dictionary_english.txt (Read dictionary_english.txt into Array of String First).
+            var Result7 = Arr2.Max(W => W.Length);
+            Console.WriteLine(Result7);
+
+            /// 8. Get the average length of the words in dictionary_english.txt (Read dictionary_english.txt into Array of String First).
+            var Result8 = Arr2.Average(W => W.Length);
+            Console.WriteLine(Result8);
+
+            /// 9. Get the total units in stock for each product category.
+            var Result9 = ProductList.GroupBy(P => P.Category)
+                                     .Select(C => new
+                                     {
+                                         Category = C.Key,
+                                         TotalUnitInStock = C.Sum(P => P.UnitsInStock)
+                                     });
+            foreach (var Result in Result9)
+                Console.WriteLine(Result);
+
+            /// 10. Get the cheapest price among each category's products
+            var Result10 = from P in ProductList
+                           group P by P.Category into C
+                           select new
+                           {
+                               Category = C.Key,
+                               CheapestPrice = C.Min(P => P.UnitPrice)
+                           };
+            foreach (var Result in Result10)
+                Console.WriteLine(Result);
+
+            /// 11. Get the products with the cheapest price in each category (Use Let)
+            var Result11 = from P in ProductList
+                           group P by P.Category into C
+                           let Cheap = C.Min(p => p.UnitPrice)
+                           from prod in C
+                           where prod.UnitPrice == Cheap
+                           select new
+                           {
+                               Category = C.Key,
+                               Product = prod.ProductName,
+                               Price = Cheap
+                           };
+            foreach (var result in Result11)
+                Console.WriteLine(result);
+
+            /// 12. Get the most expensive price among each category's products.
+            var Result12 = from P in ProductList
+                           group P by P.Category into C
+                           select new
+                           {
+                               Category = C.Key,
+                               ExpensivePrice = C.Max(P => P.UnitPrice)
+                           };
+            foreach (var Result in Result12)
+                Console.WriteLine(Result);
+
+            /// 13. Get the products with the most expensive price in each category.
+            var Result13 = from P in ProductList
+                           group P by P.Category into C
+                           let Expensive = C.Max(p => p.UnitPrice)
+                           from prod in C
+                           where prod.UnitPrice == Expensive
+                           select new
+                           {
+                               Category = C.Key,
+                               Product = prod.ProductName,
+                               Price = Expensive
+                           };
+            /*Result13 = ProductList.GroupBy(P => P.Category)
+                                  .Select(C => new
+                                  {
+                                      Category = C.Key,
+                                      Product = C.Where(P => P.UnitPrice == C.Max(p => p.UnitPrice)).Select(P => P.ProductName).FirstOrDefault(),
+                                      Price = C.Max(P => P.UnitPrice)
+                                  });*/
+            foreach (var result in Result13)
+                Console.WriteLine(result);
+
+            /// 14.Get the average price of each category's products.
+            var Result14 = ProductList.GroupBy(P => P.Category)
+                                      .Select(C => new
+                                      {
+                                          Category = C.Key,
+                                          AveragePrice = C.Average(p => p.UnitPrice)
+                                      });
+            foreach(var Result in Result14)
+                Console.WriteLine(Result);
             #endregion
         }
     }
