@@ -315,33 +315,60 @@ namespace LINQ_Project
             #endregion
 
             #region Partitioning Operators
-            /// 1. Get the first 3 orders from customers in Washington
-            var Result1 = CustomerList.Where(C => C.Region == "WA").SelectMany(C => C.Orders).Take(3);
-            foreach (var Result in Result1)
-                Console.WriteLine(Result);
+            ///// 1. Get the first 3 orders from customers in Washington
+            //var Result1 = CustomerList.Where(C => C.Region == "WA").SelectMany(C => C.Orders).Take(3);
+            //foreach (var Result in Result1)
+            //    Console.WriteLine(Result);
 
-            /// 2. Get all but the first 2 orders from customers in Washington.
-            var Result2 = CustomerList.Where(C => C.Region == "WA").SelectMany(C => C.Orders).Skip(2);
+            ///// 2. Get all but the first 2 orders from customers in Washington.
+            //var Result2 = CustomerList.Where(C => C.Region == "WA").SelectMany(C => C.Orders).Skip(2);
+            //foreach (var Result in Result2)
+            //    Console.WriteLine(Result);
+
+            ///// 3. Return elements starting from the beginning of the array until a number is hit that is less than its position in the array.
+            //int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            //var Result3 = numbers.TakeWhile((N, I) => N > I);
+            //foreach (var result in Result3)
+            //    Console.WriteLine(result);
+
+            ///// 4.Get the elements of the array starting from the first element divisible by 3.
+            //int[] numbers1 = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            //var Result4 = numbers1.SkipWhile(N => N % 3 != 0);
+            //foreach (var result in Result4)
+            //    Console.WriteLine(result);
+
+            ///// 5. Get the elements of the array starting from the first element less than its position.
+            //int[] numbers2 = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            //var Result5 = numbers2.SkipWhile((N, I) => N > I);
+            //foreach (var result in Result5)
+            //    Console.WriteLine(result);
+            #endregion
+
+            #region Quantifiers Operators
+            /// 1.Determine if any of the words in dictionary_english.txt (Read dictionary_english.txt into Array of String First) contain the substring 'ei'.
+            string[] Arr2 = File.ReadAllLines("dictionary_english.txt");
+            var Result1 = Arr2.Any(W => W.Contains("ei"));
+            Console.WriteLine(Result1);
+
+            /// 2.Return a grouped a list of products only for categories that have at least one product that is out of stock.
+            var Result2 = ProductList.GroupBy(P => P.Category)
+                                     .Where(C => C.Any(p => p.UnitsInStock == 0));
             foreach (var Result in Result2)
-                Console.WriteLine(Result);
+            {
+                Console.WriteLine(Result.Key);
+                foreach (var product in Result)
+                    Console.WriteLine($"---{product}");
+            }
 
-            /// 3. Return elements starting from the beginning of the array until a number is hit that is less than its position in the array.
-            int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-            var Result3 = numbers.TakeWhile((N, I) => N > I);
-            foreach (var result in Result3)
-                Console.WriteLine(result);
-
-            /// 4.Get the elements of the array starting from the first element divisible by 3.
-            int[] numbers1 = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-            var Result4 = numbers1.SkipWhile(N => N % 3 != 0);
-            foreach (var result in Result4)
-                Console.WriteLine(result);
-
-            /// 5. Get the elements of the array starting from the first element less than its position.
-            int[] numbers2 = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-            var Result5 = numbers2.SkipWhile((N, I) => N > I);
-            foreach (var result in Result5)
-                Console.WriteLine(result);
+            /// 3. Return a grouped a list of products only for categories that have all of their products in stock.
+            var Result3 = ProductList.GroupBy(P => P.Category)
+                                     .Where(C => C.All(p => p.UnitsInStock > 0));
+            foreach (var Result in Result3)
+            {
+                Console.WriteLine(Result.Key);
+                foreach (var product in Result)
+                    Console.WriteLine($"---{product}");
+            }
             #endregion
         }
     }
