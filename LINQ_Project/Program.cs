@@ -140,7 +140,20 @@ namespace LINQ_Project
             //    Console.WriteLine(result);
             #endregion
 
-            
+            #region Element Operators
+            /// 1. Get first Product out of Stock 
+            var Result1 = ProductList.FirstOrDefault(P => P.UnitsInStock == 0);
+            Console.WriteLine(Result1);
+
+            /// 2. Return the first product whose Price > 1000, unless there is no match, in which case null is returned.
+            var Result2 = ProductList.FirstOrDefault(P => P.UnitPrice > 1000);
+            Console.WriteLine(Result2);
+
+            /// 3.Retrieve the second number greater than 5 
+            int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            var Result3 = Arr.Where(N => N > 5).ElementAtOrDefault(1);
+            Console.WriteLine(Result3);
+            #endregion
         }
     }
 }
