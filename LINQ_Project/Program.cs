@@ -1,6 +1,9 @@
 ﻿using LINQ_Project.Data;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Intrinsics.X86;
 using static LINQ_Project.ListGenerator;
+using static System.Net.Mime.MediaTypeNames;
 namespace LINQ_Project
 {
     class CustomComparer : IComparer<string>
@@ -10,6 +13,25 @@ namespace LINQ_Project
             return string.Compare(x, y, StringComparison.OrdinalIgnoreCase);
         }
     }
+
+    class Comparerthatmatches : IEqualityComparer<string>
+    {
+        public bool Equals(string? x, string? y)
+        {
+            if(x == null || y == null)
+                return false;
+            return string.Concat(x.OrderBy(c => c)) == string.Concat(y.OrderBy(c => c));
+        }
+
+        public int GetHashCode([DisallowNull] string obj)
+        {
+            if(obj == null)
+                return 0;
+            var sort = string.Concat(obj.OrderBy(c => c));
+            return sort.GetHashCode();
+        }
+    }
+
     internal class Program
     {
         static void Main(string[] args)
@@ -345,29 +367,61 @@ namespace LINQ_Project
             #endregion
 
             #region Quantifiers Operators
-            /// 1.Determine if any of the words in dictionary_english.txt (Read dictionary_english.txt into Array of String First) contain the substring 'ei'.
-            string[] Arr2 = File.ReadAllLines("dictionary_english.txt");
-            var Result1 = Arr2.Any(W => W.Contains("ei"));
-            Console.WriteLine(Result1);
+            ///// 1.Determine if any of the words in dictionary_english.txt (Read dictionary_english.txt into Array of String First) contain the substring 'ei'.
+            //string[] Arr2 = File.ReadAllLines("dictionary_english.txt");
+            //var Result1 = Arr2.Any(W => W.Contains("ei"));
+            //Console.WriteLine(Result1);
 
-            /// 2.Return a grouped a list of products only for categories that have at least one product that is out of stock.
-            var Result2 = ProductList.GroupBy(P => P.Category)
-                                     .Where(C => C.Any(p => p.UnitsInStock == 0));
-            foreach (var Result in Result2)
+            ///// 2.Return a grouped a list of products only for categories that have at least one product that is out of stock.
+            //var Result2 = ProductList.GroupBy(P => P.Category)
+            //                         .Where(C => C.Any(p => p.UnitsInStock == 0));
+            //foreach (var Result in Result2)
+            //{
+            //    Console.WriteLine(Result.Key);
+            //    foreach (var product in Result)
+            //        Console.WriteLine($"---{product}");
+            //}
+
+            ///// 3. Return a grouped a list of products only for categories that have all of their products in stock.
+            //var Result3 = ProductList.GroupBy(P => P.Category)
+            //                         .Where(C => C.All(p => p.UnitsInStock > 0));
+            //foreach (var Result in Result3)
+            //{
+            //    Console.WriteLine(Result.Key);
+            //    foreach (var product in Result)
+            //        Console.WriteLine($"---{product}");
+            //}
+            #endregion
+
+            #region Grouping Operators
+            /// 1.	Use group by to partition a list of numbers by their remainder when divided by 5
+            List<int> numbers = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+            var Result1 = numbers.GroupBy(N => N % 5);
+            foreach (var result in Result1)
             {
-                Console.WriteLine(Result.Key);
-                foreach (var product in Result)
-                    Console.WriteLine($"---{product}");
+                Console.WriteLine($"Number with a remainder of {result.Key} when divide by 5 :");
+                foreach (var number in result)
+                    Console.WriteLine(number);
             }
 
-            /// 3. Return a grouped a list of products only for categories that have all of their products in stock.
-            var Result3 = ProductList.GroupBy(P => P.Category)
-                                     .Where(C => C.All(p => p.UnitsInStock > 0));
-            foreach (var Result in Result3)
+            /// 2.	Uses group by to partition a list of words by their first letter. Use dictionary_english.txt for Input
+            string[] Arr = File.ReadAllLines("dictionary_english.txt");
+            var Result2 = Arr.GroupBy(W => W[0]);
+            foreach (var result in Result2)
             {
-                Console.WriteLine(Result.Key);
-                foreach (var product in Result)
-                    Console.WriteLine($"---{product}");
+                Console.WriteLine(result.Key);
+                foreach (var word in result)
+                    Console.WriteLine($"   {word}");
+            }
+
+            /// 3.	Consider this Array as an Input. Use Group By with a custom comparerthatmatches words that are consists of the same Characters Together
+            string[] Arr = { "from", "salt", "earn", " last", "near", "form" };
+            var Result3 = Arr.GroupBy(W => W.Trim(), new Comparerthatmatches());
+            foreach(var result in Result3)
+            {
+                foreach(var item in result)
+                    Console.WriteLine(item);
+                Console.WriteLine("....");
             }
             #endregion
         }
