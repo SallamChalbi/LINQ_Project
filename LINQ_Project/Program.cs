@@ -415,8 +415,8 @@ namespace LINQ_Project
             }
 
             /// 3.	Consider this Array as an Input. Use Group By with a custom comparerthatmatches words that are consists of the same Characters Together
-            string[] Arr = { "from", "salt", "earn", " last", "near", "form" };
-            var Result3 = Arr.GroupBy(W => W.Trim(), new Comparerthatmatches());
+            string[] Arr1 = { "from", "salt", "earn", " last", "near", "form" };
+            var Result3 = Arr1.GroupBy(W => W.Trim(), new Comparerthatmatches());
             foreach(var result in Result3)
             {
                 foreach(var item in result)
